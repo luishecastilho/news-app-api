@@ -9,7 +9,7 @@ use App\Models\Article;
 
 use App\Http\Controllers\Sources\{
     NewsApiSource,
-    //,
+    NYTimesApiSource,
     //,
 };
 
@@ -41,5 +41,30 @@ class ArticleSeeder extends Seeder
                 ]);
             }
         }
+
+        $dataNYTimesApi = array();
+        $dataNYTimesApi["election"][] = (new NYTimesApiSource())->getData("election")["response"]["docs"];
+        $dataNYTimesApi["soccer"][] = (new NYTimesApiSource())->getData("soccer")["response"]["docs"];
+
+        foreach($dataNYTimesApi as $key => $dataCategories) {
+            foreach($dataCategories[0] as $data){
+                $autho = "";
+                if(isset($data["byline"]["person"][0])){
+                    $author = $data["byline"]["person"][0]["firstname"]." ".$data["byline"]["person"][0]["middlename"]." ".$data["byline"]["person"][0]["lastname"];
+                }
+                Article::create([
+                    'title'         => $data["headline"]["main"],
+                    'banner'        => "https://nytimes.com/".$data["multimedia"][0]["url"],
+                    'description'   => $data["snippet"],
+                    'content'       => $data["lead_paragraph"],
+                    'source'        => $data["source"],
+                    'url'           => $data["web_url"],
+                    'category'      => $key,
+                    'author'        => $author,
+                    'publishedAt'   => (new \DateTime($data["pub_date"]))->format("Y-m-d H:i:s")
+                ]);
+            }
+        }
+
     }
 }
