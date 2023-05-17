@@ -9,8 +9,8 @@ use App\Models\Article;
 
 use App\Http\Controllers\Sources\{
     NewsApiSource,
-    NYTimesApiSource,
-    //,
+    NYTimesSource,
+    TheGuardianApiSource
 };
 
 class ArticleSeeder extends Seeder
@@ -43,18 +43,19 @@ class ArticleSeeder extends Seeder
         }
 
         $dataNYTimesApi = array();
-        $dataNYTimesApi["election"][] = (new NYTimesApiSource())->getData("election")["response"]["docs"];
-        $dataNYTimesApi["soccer"][] = (new NYTimesApiSource())->getData("soccer")["response"]["docs"];
+        $dataNYTimesApi["election"][] = (new NYTimesSource())->getData("election")["response"]["docs"];
+        $dataNYTimesApi["soccer"][] = (new NYTimesSource())->getData("soccer")["response"]["docs"];
+        // 20 articles
 
         foreach($dataNYTimesApi as $key => $dataCategories) {
             foreach($dataCategories[0] as $data){
-                $autho = "";
+                $author = "";
                 if(isset($data["byline"]["person"][0])){
                     $author = $data["byline"]["person"][0]["firstname"]." ".$data["byline"]["person"][0]["middlename"]." ".$data["byline"]["person"][0]["lastname"];
                 }
                 Article::create([
                     'title'         => $data["headline"]["main"],
-                    'banner'        => "https://nytimes.com/".$data["multimedia"][0]["url"],
+                    'banner'        => isset($data["multimedia"][0]) ? "https://nytimes.com/".$data["multimedia"][0]["url"] : "",
                     'description'   => $data["snippet"],
                     'content'       => $data["lead_paragraph"],
                     'source'        => $data["source"],
@@ -62,6 +63,29 @@ class ArticleSeeder extends Seeder
                     'category'      => $key,
                     'author'        => $author,
                     'publishedAt'   => (new \DateTime($data["pub_date"]))->format("Y-m-d H:i:s")
+                ]);
+            }
+        }
+
+
+        $dataTheGuardianApi = array();
+        $dataTheGuardianApi["nba"][] = (new TheGuardianApiSource())->getData("nba")["response"]["results"];
+        $dataTheGuardianApi["brazil"][] = (new TheGuardianApiSource())->getData("brazil")["response"]["results"];
+        $dataTheGuardianApi["covid"][] = (new TheGuardianApiSource())->getData("covid")["response"]["results"];
+        // 30 articles
+
+        foreach($dataTheGuardianApi as $key => $dataCategories) {
+            foreach($dataCategories[0] as $data){
+                Article::create([
+                    'title'         => $data["webTitle"],
+                    'banner'        => "",
+                    'description'   => "",
+                    'content'       => $data["webTitle"],
+                    'source'        => "The Guardian",
+                    'url'           => $data["webUrl"],
+                    'category'      => $key,
+                    'author'        => "The Guardian",
+                    'publishedAt'   => (new \DateTime($data["webPublicationDate"]))->format("Y-m-d H:i:s")
                 ]);
             }
         }

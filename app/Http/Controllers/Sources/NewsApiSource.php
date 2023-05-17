@@ -8,7 +8,7 @@ class NewsApiSource extends HttpRequest
 
     public function __construct()
     {
-        $this->apiKey = env("NEWSAPI_KEY");
+        $this->apiKey = env("NEWSAPI_API_KEY");
     }
 
     public function getData(string $q = "bitcoin", int $limit = 30)

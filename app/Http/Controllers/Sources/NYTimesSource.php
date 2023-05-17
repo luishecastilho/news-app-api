@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers\Sources;
 
-class NYTimesApiSource extends HttpRequest
+class NYTimesSource extends HttpRequest
 {
     private string $apiKey;
 
     public function __construct()
     {
-        $this->apiKey = env("NYTIMESAPI_KEY");
+        $this->apiKey = env("NYTIMES_API_KEY");
     }
 
     public function getData(string $q = "election", int $limit = 30)
