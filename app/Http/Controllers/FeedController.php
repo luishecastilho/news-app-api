@@ -7,7 +7,7 @@ use App\Models\Article;
 
 class FeedController extends Controller
 {
-    public function index(Request $request): Article
+    public function index(Request $request)
     {
         try {
             $articlesQuery = Article::query();

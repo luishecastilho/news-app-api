@@ -5,13 +5,15 @@ use Illuminate\Support\Facades\Route;
 use \App\Http\Controllers\{
     AuthController,
     UserController,
-    FeedController
+    FeedController,
+    ArticleController
 };
+
+Route::post('/auth', [AuthController::class, 'store'])->name('auth.store');
 
 Route::middleware('auth:api')->group(function () {
     Route::prefix('auth')->group(function () {
         // login oauth...
-        Route::post('/', [AuthController::class, 'store'])->name('auth.store');
         Route::post('/logout', [AuthController::class, 'logout'])->name('auth.logout');
     });
 

@@ -3,17 +3,15 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+//use App\Http\Requests\AuthStoreRequest;
+
 use App\Models\User;
 
 class AuthController extends Controller
 {
-    public function register(Request $request)
+    public function store(Request $request)
     {
-        $data = $request->validate([
-            'name' => 'required|max:255',
-            'email' => 'required|email|unique:users',
-            'password' => 'required|confirmed'
-        ]);
+        $data = $request->post();
 
         $data['password'] = bcrypt($request->password);
 
@@ -21,7 +19,7 @@ class AuthController extends Controller
 
         $token = $user->createToken('API Token')->accessToken;
 
-        return response()->json(['user' => $user, 'token' => $token]);
+        return ["user" => $user, "tokenData" => $token, "token" => $token->token];
     }
 
     public function logout(Request $request)
