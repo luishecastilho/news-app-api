@@ -9,13 +9,11 @@ use \App\Http\Controllers\{
     ArticleController
 };
 
-Route::post('/auth', [AuthController::class, 'store'])->name('auth.store');
+Route::post('/auth/register', [AuthController::class, 'store'])->name('auth.store');
+Route::post('/auth/login', [AuthController::class, 'login'])->name('login');
 
 Route::middleware('auth:api')->group(function () {
-    Route::prefix('auth')->group(function () {
-        // login oauth...
-        Route::post('/logout', [AuthController::class, 'logout'])->name('auth.logout');
-    });
+    Route::post('/auth/logout', [AuthController::class, 'logout'])->name('auth.logout');
 
     Route::prefix('user')->group(function () {
         Route::get('/', [UserController::class, 'index'])->name('user.index');

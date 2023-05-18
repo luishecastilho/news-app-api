@@ -4,8 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 //use App\Http\Requests\AuthStoreRequest;
-
 use App\Models\User;
+use Auth;
 
 class AuthController extends Controller
 {
@@ -17,9 +17,24 @@ class AuthController extends Controller
 
         $user = User::create($data);
 
-        $token = $user->createToken('API Token')->accessToken;
+        $token = $user->createToken('registerToken')->accessToken;
 
-        return ["user" => $user, "tokenData" => $token, "token" => $token->token];
+        return ["user" => $user, "token" => $token];
+    }
+
+    public function login(Request $request)
+    {
+        $data = $request->all();
+
+        Auth::attempt($data);
+
+        $user = Auth::user();
+        if($user)
+        {
+            $token = $user->createToken('loginToken')->accessToken;
+            return response()->json(['status' => 200, 'token' => $token]);
+        }
+        return false;
     }
 
     public function logout(Request $request)
