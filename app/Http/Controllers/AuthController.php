@@ -2,14 +2,17 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-//use App\Http\Requests\AuthStoreRequest;
+use App\Http\Requests\{
+    AuthRegisterRequest,
+    AuthLoginRequest
+};
+
 use App\Models\User;
 use Auth;
 
 class AuthController extends Controller
 {
-    public function store(Request $request)
+    public function store(AuthRegisterRequest $request)
     {
         $data = $request->post();
 
@@ -22,7 +25,7 @@ class AuthController extends Controller
         return ["user" => $user, "token" => $token];
     }
 
-    public function login(Request $request)
+    public function login(AuthLoginRequest $request)
     {
         $data = $request->all();
 
@@ -37,9 +40,9 @@ class AuthController extends Controller
         return false;
     }
 
-    public function logout(Request $request)
+    public function logout()
     {
-        $request->user()->token()->revoke();
+        Auth::user()->token()->revoke();
 
         return response()->json(['message' => 'Successfully logged out']);
     }

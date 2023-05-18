@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Http\Requests\{
+    UserUpdateRequest,
+    UserSavePreferencesRequest
+};
 use App\Models\User;
 use Auth;
 
@@ -13,12 +16,18 @@ class UserController extends Controller
         return Auth::user();
     }
 
-    public function update(Request $request): User
+    public function update(UserUpdateRequest $request): User
     {
         try{
             $user = User::find(Auth::id());
 
-            $user->fill($request->post());
+            $data = $request->post();
+
+            if(isset($request->password)){
+                $data['password'] = bcrypt($request->password);
+            }
+
+            $user->fill($data);
 
             $user->save();
 
@@ -28,7 +37,7 @@ class UserController extends Controller
         };
     }
 
-    public function savePreferences(Request $request)
+    public function savePreferences(UserSavePreferencesRequest $request)
     {
         // user preferences
         return true;
