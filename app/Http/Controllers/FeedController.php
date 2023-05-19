@@ -47,7 +47,7 @@ class FeedController extends Controller
 
             $articles = $articlesQuery
                             ->orderBy('publishedAt', 'desc')
-                            ->paginate(25);
+                            ->paginate(15);
 
             return response()->json(["data" => ["articles" => $articles], "message" => "List of articles."], 200);
         } catch (\Exception $e) {
