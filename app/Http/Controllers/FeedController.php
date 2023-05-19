@@ -75,12 +75,16 @@ class FeedController extends Controller
 
             $articles = $articlesQuery->get();
 
+            $sources = [];
+            $categories = [];
+            $authors = [];
             foreach($articles as $article) {
                 $sources[] = $article["source"];
                 $categories[] = $article["category"];
+                $authors[] = $article["author"];
             }
 
-            return response()->json(["data" => ["sources" => array_values(array_unique($sources)), "categories" => array_values(array_unique($categories))], "message" => "List of data for filtering."], 200);
+            return response()->json(["data" => ["sources" => array_values(array_unique($sources)), "categories" => array_values(array_unique($categories)), "authors" => array_values(array_unique($authors))], "message" => "List of data for filtering."], 200);
         } catch (\Exception $e) {
             return response()->json([$e->getMessage()], 400);
         }

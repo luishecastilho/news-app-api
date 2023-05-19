@@ -24,6 +24,8 @@ Route::middleware('auth:api')->group(function () {
     Route::prefix('user')->group(function () {
         Route::get('/', [UserController::class, 'index'])->name('user.index');
         Route::put('/', [UserController::class, 'update'])->name('user.update');
+        Route::get('/preferences', [UserController::class, 'getPreferences'])->name('user.getPreferences');
+        Route::get('/preferences-string', [UserController::class, 'getPreferencesString'])->name('user.getPreferencesString');
         Route::put('/preferences', [UserController::class, 'savePreferences'])->name('user.savePreferences');
     });
 
