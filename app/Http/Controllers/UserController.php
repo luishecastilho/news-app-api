@@ -36,11 +36,16 @@ class UserController extends Controller
 
             $data = $request->post();
 
-            if(isset($request->password)){
-                $data['password'] = bcrypt($request->password);
+            $user->name = $data["name"];
+
+            if($data["email"] !== $user->email) {
+                $user->email = $data["email"];
             }
 
-            $user->fill($data);
+            if(isset($request->password) && $request->password != ""){
+                $data['password'] = bcrypt($request->password);
+                $user->password = $data["password"];
+            }
 
             $user->save();
 
