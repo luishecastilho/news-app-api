@@ -10,7 +10,7 @@ use \App\Http\Controllers\{
 };
 
 Route::post('/auth/register', [AuthController::class, 'store'])->name('auth.store');
-Route::post('/auth/login', [AuthController::class, 'login'])->name('login');
+Route::post('/auth/login', [AuthController::class, 'login'])->name('auth.login');
 
 Route::middleware('auth:api')->group(function () {
     Route::post('/auth/logout', [AuthController::class, 'logout'])->name('auth.logout');

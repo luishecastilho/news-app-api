@@ -14,36 +14,49 @@ class AuthController extends Controller
 {
     public function store(AuthRegisterRequest $request)
     {
-        $data = $request->post();
+        try {
+            $data = $request->post();
 
-        $data['password'] = bcrypt($request->password);
+            $data['password'] = bcrypt($request->password);
 
-        $user = User::create($data);
+            $user = User::create($data);
 
-        $token = $user->createToken('registerToken')->accessToken;
+            $token = $user->createToken('registerToken')->accessToken;
 
-        return ["user" => $user, "token" => $token];
+            return response()->json(["data" => ["user" => $user, "token" => $token], "message" => "User created."], 200);
+        } catch (\Exception $e) {
+            return response()->json([$e->getMessage()], 400);
+        }
     }
 
     public function login(AuthLoginRequest $request)
     {
-        $data = $request->all();
+        try {
+            $data = $request->all();
 
-        Auth::attempt($data);
+            Auth::attempt($data);
 
-        $user = Auth::user();
-        if($user)
-        {
-            $token = $user->createToken('loginToken')->accessToken;
-            return response()->json(['status' => 200, 'token' => $token]);
+            $user = Auth::user();
+            if($user)
+            {
+                $token = $user->createToken("loginToken")->accessToken;
+
+                return response()->json(["data" => ["token" => $token],"message" => "Successfully logged in."], 200);
+            }
+            return response()->json(["data"=> [], "message" => "Error on trying to login. Try again."], 400);
+        } catch (\Exception $e) {
+            return response()->json([$e->getMessage()], 400);
         }
-        return false;
     }
 
     public function logout()
     {
-        Auth::user()->token()->revoke();
+        try {
+            Auth::user()->token()->revoke();
 
-        return response()->json(['message' => 'Successfully logged out']);
+            return response()->json(["data"=> [], "message" => "Successfully logged out."], 200);
+        } catch (\Exception $e) {
+            return response()->json([$e->getMessage()], 400);
+        }
     }
 }

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Article;
+use Carbon\Carbon;
 use Auth;
 
 class FeedController extends Controller
@@ -26,16 +27,22 @@ class FeedController extends Controller
             }
 
             if($request->get('publishedAt') !== null) {
-                $articlesQuery->where('publishedAt', '=', $request->get('publishedAt'));
+                $articlesQuery->whereDate('publishedAt', '=', Carbon::parse($request->get('publishedAt'))->format("Y-m-d"));
             }
 
             // user preferences
+            // user preferences
+            // user preferences
+            // user preferences
+            // user preferences
 
-            return $articlesQuery
-                ->orderBy('publishedAt', 'desc')
-                ->paginate(25);
+            $articles = $articlesQuery
+                            ->orderBy('publishedAt', 'desc')
+                            ->paginate(25);
+
+            return response()->json(["data" => ["articles" => $articles], "message" => "List of articles."], 200);
         } catch (\Exception $e) {
-            return $e->getMessage();
+            return response()->json([$e->getMessage()], 400);
         }
     }
 }

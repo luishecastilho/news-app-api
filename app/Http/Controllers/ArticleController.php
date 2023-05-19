@@ -3,16 +3,21 @@
 namespace App\Http\Controllers;
 
 use App\Models\Article;
-use Auth;
 
 class ArticleController extends Controller
 {
-    public function index(int $id): Article
+    public function index(int $id)
     {
         try {
-            return Article::find($id);
+            $article = Article::find($id);
+
+            if($article){
+                return response()->json(["data" => $article, "message" => "Article data found."], 200);
+            }
+
+            return response()->json(["data" => [], "message" => "Article not found."], 400);
         } catch (\Exception $e) {
-            return $e->getMessage();
+            return response()->json([$e->getMessage()], 400);
         }
     }
 }
