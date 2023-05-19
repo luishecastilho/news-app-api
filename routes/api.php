@@ -26,4 +26,10 @@ Route::middleware('auth:api')->group(function () {
         Route::put('/', [UserController::class, 'update'])->name('user.update');
         Route::put('/preferences', [UserController::class, 'savePreferences'])->name('user.savePreferences');
     });
+
+
+    Route::prefix('auth/feed')->group(function () {
+        Route::get('/', [FeedController::class, 'index'])->name('feed.index');
+        Route::get('/filter-data', [FeedController::class, 'filterData'])->name('feed.filterData');
+    });
 });
