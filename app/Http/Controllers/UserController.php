@@ -12,7 +12,7 @@ use Auth;
 
 class UserController extends Controller
 {
-    public function index(): User
+    public function index()
     {
         try {
             $user = Auth::user();
@@ -25,7 +25,7 @@ class UserController extends Controller
         }
     }
 
-    public function update(UserUpdateRequest $request): User
+    public function update(UserUpdateRequest $request)
     {
         try{
             $user = User::find(Auth::id());
