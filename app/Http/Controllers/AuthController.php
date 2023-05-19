@@ -8,6 +8,7 @@ use App\Http\Requests\{
 };
 
 use App\Models\User;
+use App\Models\UserPreference;
 use Auth;
 
 class AuthController extends Controller
@@ -22,6 +23,8 @@ class AuthController extends Controller
             $user = User::create($data);
 
             $token = $user->createToken('registerToken')->accessToken;
+
+            UserPreference::create(["user_id" => $user->id]);
 
             return response()->json(["data" => ["user" => $user, "token" => $token], "message" => "User created."], 200);
         } catch (\Exception $e) {
