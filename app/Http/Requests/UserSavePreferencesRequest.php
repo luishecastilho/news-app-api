@@ -24,7 +24,9 @@ class UserSavePreferencesRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'sources' => 'nullable|string',
+            'categories' => 'nullable|string',
+            'authors' => 'nullable|string',
         ];
     }
 
