@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Article;
+use App\Models\UserPreference;
 use Carbon\Carbon;
 use Auth;
 
@@ -13,6 +14,20 @@ class FeedController extends Controller
     {
         try {
             $articlesQuery = Article::query();
+
+            $userPreference = UserPreference::where('user_id', Auth::id())->first();
+
+            if($userPreference) {
+                if($userPreference["sources"] !== null && $userPreference["sources"] !== "") {
+                    $articlesQuery->whereIn("source", explode(",", $userPreference["sources"]));
+                }
+                if($userPreference["categories"] !== null && $userPreference["categories"] !== "") {
+                    $articlesQuery->whereIn("category", explode(",", $userPreference["categories"]));
+                }
+                if($userPreference["authors"] !== null && $userPreference["authors"] !== "") {
+                    $articlesQuery->whereIn("author", explode(",", $userPreference["authors"]));
+                }
+            }
 
             if($request->get('q') !== null) {
                 $articlesQuery->where('title', 'like', '%'.$request->get('q').'%');
@@ -29,12 +44,6 @@ class FeedController extends Controller
             if($request->get('publishedAt') !== null) {
                 $articlesQuery->whereDate('publishedAt', '=', Carbon::parse($request->get('publishedAt'))->format("Y-m-d"));
             }
-
-            // user preferences
-            // user preferences
-            // user preferences
-            // user preferences
-            // user preferences
 
             $articles = $articlesQuery
                             ->orderBy('publishedAt', 'desc')
