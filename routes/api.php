@@ -12,6 +12,12 @@ use \App\Http\Controllers\{
 Route::post('/auth/register', [AuthController::class, 'store'])->name('auth.store');
 Route::post('/auth/login', [AuthController::class, 'login'])->name('auth.login');
 
+Route::prefix('feed')->group(function () {
+    Route::get('/', [FeedController::class, 'index'])->name('feed.index');
+    Route::get('/filter-data', [FeedController::class, 'filterData'])->name('feed.filterData');
+    Route::get('/article/{id}', [ArticleController::class, 'index'])->name('article.index')->where('id', '[0-9]+');
+});
+
 Route::middleware('auth:api')->group(function () {
     Route::post('/auth/logout', [AuthController::class, 'logout'])->name('auth.logout');
 
@@ -19,11 +25,5 @@ Route::middleware('auth:api')->group(function () {
         Route::get('/', [UserController::class, 'index'])->name('user.index');
         Route::put('/', [UserController::class, 'update'])->name('user.update');
         Route::put('/preferences', [UserController::class, 'savePreferences'])->name('user.savePreferences');
-    });
-
-    Route::prefix('feed')->group(function () {
-        Route::get('/', [FeedController::class, 'index'])->name('feed.index');
-        Route::get('/filter-data', [FeedController::class, 'filterData'])->name('feed.filterData');
-        Route::get('/article/{id}', [ArticleController::class, 'index'])->name('article.index')->where('id', '[0-9]+');
     });
 });
