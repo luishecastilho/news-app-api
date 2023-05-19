@@ -23,6 +23,7 @@ Route::middleware('auth:api')->group(function () {
 
     Route::prefix('feed')->group(function () {
         Route::get('/', [FeedController::class, 'index'])->name('feed.index');
+        Route::get('/filter-data', [FeedController::class, 'filterData'])->name('feed.filterData');
         Route::get('/article/{id}', [ArticleController::class, 'index'])->name('article.index')->where('id', '[0-9]+');
     });
 });
